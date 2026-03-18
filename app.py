@@ -4,8 +4,7 @@ import google.generativeai as genai
 # --- 1. セキュリティ設定 ---
 try:
     API_KEY = st.secrets["GEMINI_API_KEY"]
-    # ここ！この1行でGoogleに「安定した最新の道」を教えるんや
-    genai.configure(api_key=API_KEY)
+    genai.configure(api_key=API_KEY, transport='rest')
 except:
     st.error("APIキーの設定を確認してや。")
     st.stop()
