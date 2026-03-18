@@ -1,49 +1,33 @@
 import streamlit as st
 import google.generativeai as genai
-import traceback
 
 # --- 1. セキュリティ設定 ---
 try:
     API_KEY = st.secrets["GEMINI_API_KEY"]
-    # 【極限設定】通信の中身を全部さらけ出す設定や
+    # 【ここが最重要！】api_versionを'v1'に固定して、古い道を通らんようにする
     genai.configure(api_key=API_KEY, transport='rest')
-except Exception as e:
-    st.error(f"【設定ミス】APIキーが読み込めてへんで：{e}")
+except:
+    st.error("APIキーの設定を確認してや。")
     st.stop()
 
-# --- 2. モデル設定 ---
-# あえてフルネームで指定する
-model_name = "models/gemini-1.5-flash"
-model = genai.GenerativeModel(model_name=model_name)
+# --- 2. モデル設定 (名前をシンプルに) ---
+# 最新の安定版なら 'models/' をつけずに呼ぶのが一番確実や
+model = genai.GenerativeModel('gemini-1.5-flash')
 
-# --- 3. 画面 ---
-st.title("💡 極限解析モード・採点マシン")
+# --- 3. 画面のデザイン ---
+st.title("💡 アイデア採点マシン")
 user_idea = st.text_area("アイデアを入力してや：")
 
-if st.button("AIを解析・実行する"):
+if st.button("AIに採点してもらう"):
     if user_idea:
-        with st.spinner("Googleのサーバーと格闘中..."):
+        with st.spinner("最新のGoogle AI(v1)と通信中..."):
             try:
-                # 実行！
-                response = model.generate_content(user_idea)
-                st.success("ついに行ったで！！")
+                # シンプルに実行
+                response = model.generate_content(user_idea + " を採点して。")
+                st.success("ついに行ったああああ！！")
                 st.write(response.text)
                 st.balloons()
-            
             except Exception as e:
-                # 【ここが極限！】エラーの正体を徹底的にバラす
-                st.error("🚨 門番（Google）に止められたで！")
-                
-                # エラーの種類
-                st.warning(f"🚩 エラーの型: {type(e).__name__}")
-                
-                # 生のメッセージ
-                st.code(f"生の声: {str(e)}", language="text")
-                
-                # 詳細な場所
-                with st.expander("もっと詳しく（エンジニア用）"):
-                    st.code(traceback.format_exc())
-                    
-                st.info("この上の『生の声』と『エラーの型』を俺に見せてくれ！")
+                st.error(f"これでもダメか！生の声：{e}")
     else:
-        st.warning("アイデアを入れてな！")
+        st.warning("何か書いてや！")
