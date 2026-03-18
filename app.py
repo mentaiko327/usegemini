@@ -1,44 +1,33 @@
 import streamlit as st
 import google.generativeai as genai
-import json
 
 # --- 1. セキュリティ設定 ---
 try:
     API_KEY = st.secrets["GEMINI_API_KEY"]
-    # 【ここが最重要！】古い道(v1beta)じゃなくて、今の標準の道を通るように指定したで
+    # ここ！この1行でGoogleに「安定した最新の道」を教えるんや
     genai.configure(api_key=API_KEY)
 except:
-    st.error("APIキーが設定されてへんで！SettingsのSecretsを確認してや。")
+    st.error("APIキーの設定を確認してや。")
     st.stop()
 
-# --- 2. モデル設定 ---
-# model_name の指定を、一番エラーが出にくいこれに変えるで
-model = genai.GenerativeModel(model_name="gemini-1.5-flash")
+# --- 2. モデル設定 (名前をあえてシンプルにする) ---
+model = genai.GenerativeModel("gemini-1.5-flash")
 
 # --- 3. 画面のデザイン ---
-st.set_page_config(page_title="Idea Evaluator", page_icon="💡")
-st.title("💡 アイデア採点マシン (100点満点版)")
-st.write("あなたのビジネスアイデアをAIがガチで評価するで。")
+st.title("💡 アイデア採点マシン")
+user_idea = st.text_area("アイデアを入力してや：", placeholder="例：AI土地解析アプリ")
 
-# 入力欄
-user_idea = st.text_area("アイデアを詳しく入力してや：", height=200, placeholder="例：余ったクッキーとコーヒーをセットで売るアプリ")
-
-# 実行ボタン
-if st.button("AIに採点してもらう", type="primary"):
+if st.button("AIに採点してもらう"):
     if user_idea:
-        with st.spinner("Gemini AIが考え中や。ちょっと待ってな..."):
-            prompt = f"以下のアイデアを収益性、実現性、独創性の3項目で採点してJSONで出して：{user_idea}"
-            
+        with st.spinner("AIが考え中..."):
             try:
-                # 【ここも重要！】古いバージョンを指定せず、最新版で動かす書き方や
-                response = model.generate_content(prompt)
-                
-                # AIの返答を表示するで
-                st.success("採点完了や！")
+                # ここで余計な設定をせず、シンプルに投げる！
+                response = model.generate_content(user_idea + " を「収益性」「独創性」「実現性」で採点して。")
+                st.success("成功や！結果を見てや！")
                 st.write(response.text)
                 st.balloons()
-
             except Exception as e:
-                st.error(f"エラーが発生したわ：{e}")
+                # もしエラーが出ても、内容を詳しく出すようにしたで
+                st.error(f"またエラーか！内容はこれや：{e}")
     else:
-        st.warning("アイデアを入力せんと始まらんで！")
+        st.warning("何か書いてくれへんと採点できへんで！")
