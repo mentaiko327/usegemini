@@ -15,7 +15,8 @@ except:
 # --- 修正版：モデル設定 ---
 # model_nameを "gemini-1.5-flash-latest" に変えるのが今の正解や！
 try:
-    model = genai.GenerativeModel("gemini-1.5-flash-latest")
+    # 一番シンプルで、どんな時でも動く書き方に変えるで！
+model = genai.GenerativeModel("gemini-1.5-flash")
 except Exception as e:
     st.error(f"モデルの起動に失敗したわ：{e}")
 
