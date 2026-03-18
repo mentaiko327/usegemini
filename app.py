@@ -3,9 +3,11 @@ import google.generativeai as genai
 import json
 
 # --- 1. セキュリティ設定 ---
+# --- 1. セキュリティ設定 ---
 try:
     API_KEY = st.secrets["GEMINI_API_KEY"]
-    genai.configure(api_key=API_KEY)
+    # ↓ここ！これに書き換えるんや！
+    genai.configure(api_key=API_KEY, transport='rest')
 except:
     st.error("APIキーが設定されてへんで！SettingsのSecretsを確認してや。")
     st.stop()
