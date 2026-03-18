@@ -10,8 +10,8 @@ except:
     st.error("APIキーが設定されてへんで！SettingsのSecretsを確認してや。")
     st.stop()
 
-# --- 2. モデル設定 (ここを修正したで！) ---
-model = genai.GenerativeModel("gemini-1.5-flash")
+# これが一番古くて安定してるモデル名や
+model = genai.GenerativeModel("gemini-1.0-pro")
 
 # --- 3. 画面のデザイン ---
 st.set_page_config(page_title="Idea Evaluator", page_icon="💡")
