@@ -12,8 +12,12 @@ except:
     st.error("APIキーが設定されてへんで！SettingsのSecretsを確認してや。")
     st.stop()
 
-# これを今の model = ... の行と入れ替えて！
-model = genai.GenerativeModel(model_name="models/gemini-1.5-flash")
+# --- 修正版：モデル設定 ---
+# model_nameを "gemini-1.5-flash-latest" に変えるのが今の正解や！
+try:
+    model = genai.GenerativeModel("gemini-1.5-flash-latest")
+except Exception as e:
+    st.error(f"モデルの起動に失敗したわ：{e}")
 
 # --- 2. 画面のデザイン ---
 st.set_page_config(page_title="Idea Evaluator", page_icon="💡")
